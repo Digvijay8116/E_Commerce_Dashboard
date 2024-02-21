@@ -5,7 +5,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
   cors: {
-    origin: "e-comm-front-two.vercel.app", 
+    origin: "*", //just give the local host:3000 not the complete path
     method: ["GET", "POST", "PUT", "DELETE"],
   },
 });
@@ -23,102 +23,6 @@ const otp = require("./otpgenerate");
 
 app.use(express.json());
 app.use(cors());
-
-// // swagger
-const swaggerJSdoc = require("swagger-jsdoc");
-const swaggerUI = require("swagger-ui-express");
-
-const options = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "E-Comm",
-      version: "1.0.0",
-    },
-    servers: [
-      {
-        // url: "http://localhost:9002",
-        url: "https://digvijay-m1back.mobiloitte.io",
-      },
-    ],
-  },
-  apis: ["./index.js"],
-};
-
-const swaggerSpec = swaggerJSdoc(options);
-app.use("/api", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
-
-//// /loginotp
-/**
- * @swagger
- * /loginotp:
- *   post:
- *     summary: Send OTP for update password
- *     tags: [Authentication]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *                 example: user@example.com
- *     responses:
- *       '200':
- *         description: OTP sent successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: OTP sent successfully
- *       '400':
- *         description: Bad request
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: Please provide an email
- *       '404':
- *         description: User not found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: No user found with this email
- *       '500':
- *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: Internal server error
- */
 
 //this api is used to send otp in the bacend and update that otp in the backend
 app.post("/loginotp", async (req, res) => {
@@ -154,50 +58,6 @@ app.post("/loginotp", async (req, res) => {
   }
 });
 
-//swagger
-// // /profile/:email
-/**
- * @swagger
- * /profile/{email}:
- *   get:
- *     summary: Get user profile by email
- *     description: Retrieve user profile details based on the provided email address.
- *     parameters:
- *       - in: path
- *         name: email
- *         required: true
- *         description: Email address of the user whose profile is to be retrieved.
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: User profile successfully retrieved.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *       404:
- *         description: User with the provided email not found.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: User not found
- *       500:
- *         description: Server error occurred.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: Server error
- */
-
 //this api is used to send data of profile in  the backend
 app.get("/profile/:email", async (req, res) => {
   try {
@@ -215,68 +75,6 @@ app.get("/profile/:email", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-
-// swagger
-// ///verifyotp/:email
-/**
- * @swagger
- * /verifyotp/{email}:
- *   put:
- *     summary: Verify OTP for login
- *     description: Verify the OTP sent to the provided email address for login authentication.
- *     parameters:
- *       - in: path
- *         name: email
- *         required: true
- *         description: Email address of the user to verify OTP.
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               otp:
- *                 type: string
- *                 description: The one-time password (OTP) to verify.
- *                 example: 123456
- *     responses:
- *       200:
- *         description: OTP successfully verified.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 result:
- *                   type: string
- *                   example: OTP matched
- *                 value:
- *                   type: boolean
- *                   example: true
- *       404:
- *         description: User not found with the provided email.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: User not found
- *       500:
- *         description: Internal server error occurred.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: Internal server error
- */
 
 //this api is used to verify otp at the backend
 app.put("/verifyotp/:email", async (req, res) => {
@@ -298,65 +96,6 @@ app.put("/verifyotp/:email", async (req, res) => {
   }
 });
 
-// //swagger
-// /updatepassword/:email
-/**
- * @swagger
- * /updatepassword/{email}:
- *   put:
- *     summary: Update user password
- *     description: Update the password for the user identified by the provided email address.
- *     parameters:
- *       - in: path
- *         name: email
- *         required: true
- *         description: Email address of the user whose password is to be updated.
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               password:
- *                 type: string
- *                 description: The new password for the user.
- *                 example: newPassword123
- *     responses:
- *       200:
- *         description: Password updated successfully.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 result:
- *                   type: string
- *                   example: Password updated
- *       404:
- *         description: User not found with the provided email.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: User not found
- *       500:
- *         description: Internal server error occurred.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: Internal server error
- */
-
 //this api is used to update password in the backend
 app.put("/updatepassword/:email", async (req, res) => {
   try {
@@ -375,89 +114,6 @@ app.put("/updatepassword/:email", async (req, res) => {
     return res.status(500).send({ error: "Internal server error" });
   }
 });
-
-// // swagger
-// // /register
-/**
- * @swagger
- * /register:
- *   post:
- *     summary: Register a new user
- *     description: Register a new user with the provided name, email, password, latitude, and longitude.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 description: The name of the user.
- *                 example: John Doe
- *               email:
- *                 type: string
- *                 format: email
- *                 description: The email address of the user.
- *                 example: user@example.com
- *               password:
- *                 type: string
- *                 description: The password of the user.
- *                 example: Password123
- *               lat:
- *                 type: number
- *                 format: float
- *                 description: The latitude of the user's location.
- *                 example: 51.509865
- *               long:
- *                 type: number
- *                 format: float
- *                 description: The longitude of the user's location.
- *                 example: -0.118092
- *     responses:
- *       200:
- *         description: User registered successfully.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 result:
- *                   $ref: '#/components/schemas/User'
- *                 auth:
- *                   type: string
- *                   description: JWT token for authentication.
- *       400:
- *         description: Bad request. Missing or invalid parameters provided.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 result:
- *                   type: string
- *                   example: Please provide name
- *       409:
- *         description: Conflict. User already exists with the provided email.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 result:
- *                   type: string
- *                   example: User already exists
- *       500:
- *         description: Internal server error occurred.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 result:
- *                   type: string
- *                   example: Internal server error
- */
 
 //this api is used to register a new user in the data base
 app.post("/register", async (req, res) => {
@@ -509,85 +165,6 @@ app.post("/register", async (req, res) => {
   }
 });
 
-// swagger
-// // /login
-/**
- * @swagger
- * /login:
- *   post:
- *     summary: User login
- *     description: Authenticate user with email and password.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *                 description: The email address of the user.
- *                 example: user@example.com
- *               password:
- *                 type: string
- *                 description: The password of the user.
- *                 example: Password123
- *     responses:
- *       200:
- *         description: User authenticated successfully.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 user:
- *                   $ref: '#/components/schemas/User'
- *                 auth:
- *                   type: string
- *                   description: JWT token for authentication.
- *       400:
- *         description: Bad request. Missing or invalid parameters provided.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 result:
- *                   type: string
- *                   example: Please provide an email
- *       401:
- *         description: Unauthorized. Incorrect email or password.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 result:
- *                   type: string
- *                   example: Password did not match
- *       404:
- *         description: User not found. Sign up first.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 result:
- *                   type: string
- *                   example: No user found. Sign up first
- *       500:
- *         description: Internal server error occurred.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 result:
- *                   type: string
- *                   example: Something went wrong. Please try again later
- */
-
 //this api is  used for login authentication
 app.post("/login", async (req, res) => {
   try {
@@ -626,9 +203,6 @@ app.post("/login", async (req, res) => {
       .send({ result: "Something went wrong. Please try again later" }); // Status 500: Internal Server Error
   }
 });
-
-// swagger
-// // /add-product
 
 //this api is used to add products in the data base
 app.post("/add-product", verifyToken, async (req, res) => {
@@ -855,8 +429,10 @@ app.put("/3kmUser", async (req, res) => {
     res.status(500).send({ result: "Internal server error" }); // Status 500: Internal Server Error
   }
 });
+
+
 app.get("/",(req,res)=>{
-  res.send("Hello")
+  res.send("home")
 })
 server.listen(9002, () => {
   console.log("I am on at the port 9002");
