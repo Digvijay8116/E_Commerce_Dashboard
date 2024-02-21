@@ -64,7 +64,7 @@ const Login = () => {
         <input
           className="appButton"
           type="submit"
-          value="Login"
+          value="LOGIN"
           // onClick={() => handleLogin()}
         />
       </form>
