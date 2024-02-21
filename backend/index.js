@@ -855,7 +855,9 @@ app.put("/3kmUser", async (req, res) => {
     res.status(500).send({ result: "Internal server error" }); // Status 500: Internal Server Error
   }
 });
-
+app.get("/",(req,res)=>{
+  res.send("Hello")
+})
 server.listen(9002, () => {
   console.log("I am on at the port 9002");
 });
