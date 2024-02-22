@@ -5,7 +5,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
   cors: {
-    origin: "https://e-comm-front-nine.vercel.app", //just give the local host:3000 not the complete path
+    origin: "e-comm-front-nine.vercel.app",
     method: ["GET", "POST", "PUT", "DELETE"],
   },
 });
