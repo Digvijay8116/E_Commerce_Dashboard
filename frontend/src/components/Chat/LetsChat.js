@@ -4,9 +4,9 @@ import "./letschat.css";
 import { useNavigate, useParams } from "react-router-dom";
 
 import {BACKEND_URI} from "../Backend_URI"
-const socket = io.connect();
+const socket = io.connect("https://e-comm-back.vercel.app");
 
-export default function LetsChat("https://e-comm-back.vercel.app") {
+export default function LetsChat() {
 
   const params = useParams();
   const navigate = useNavigate();
