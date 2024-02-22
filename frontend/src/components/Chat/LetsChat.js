@@ -4,7 +4,7 @@ import "./letschat.css";
 import { useNavigate, useParams } from "react-router-dom";
 
 import {BACKEND_URI} from "../Backend_URI"
-const socket = io.connect(BACKEND_URI);
+const socket = io.connect();
 
 export default function LetsChat() {
 
