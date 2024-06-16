@@ -7,15 +7,15 @@ const otpMail = () => {
     port: 587,
     secure: false,
     auth: {
-      user: "abhayyadav17720@gmail.com",
-      pass: "mliqhhucaiwywbks",
+      user: "",
+      pass: "",
     },
   });
 
   async function main() {
     const info = await transporter.sendMail({
-      from: "abhayyadav17720@gmail.com",
-      to: "abhayyadav17720@gmail.com",
+      from: "",
+      to: "",
       subject: "OTP",
       text: `your otp is ${otp}`,
     });
